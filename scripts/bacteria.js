@@ -1,0 +1,79 @@
+const config = {
+    activation: 'tanh',
+    inputSize: 4,
+    outputSize: 2,
+    hiddenLayers: [5, 5]
+}
+
+const random = function(a, b) {
+    return Math.floor(Math.random() * (b-a)) + a
+}
+
+class Bacteria {
+    // класс бактерии
+    constructor(game, x, y, net, color) {
+        this.game = game;
+        this.x = x;
+        this.y = y;
+        this.width = 25;
+        this.height = 25;
+        this.speed = 4;
+        //this.maxAge = 2400 + Math.floor(Math.random()*200);
+        this.maxAge = 2500;
+        this.maxEnergy = 2000;
+        this.age = 0;
+        this.energy = 800;
+        this.energyUsage = 1;
+        this.reprInterval = 100;
+        this.reprTime = -200;
+        this.reprCost = 500;
+        this.speedX = 0;
+        this.speedY = 0;
+
+        this.color = undefined;
+        if (typeof color === "undefined") {
+            this.color = random(0, 359);
+        } else {
+            this.color = color;
+        }
+
+        this.net = undefined;
+        if (typeof net === "undefined") {
+            this.net = new Network([
+                new Layer(4, 5, "relu"),
+                new Layer(5, 5, "sigmoid"),
+                new Layer(5, 2, "tanh"),
+            ]);
+        } else {
+            this.net = new Network(structuredClone(net).layers.map(element => new Layer(element.inputSize-1, element.numberNeurons, element.activation, element.bias, element.weights)));
+            
+            if (random(0, 50) === 0) {
+                this.net.mutate(0.07);
+                const color_change = random(-4, 4) * 10;
+                //console.log(`Bacteria has mutated. Parent color: ${this.color}, new color: ${this.color+color_change}`);
+                this.color += color_change;
+            }
+        }
+    }
+
+    update() {
+        //[this.speedX, this.speedY] = this.net.run([this.x/this.game.width-this.game.zoneData.width, this.y/this.game.height, this.energy/this.maxEnergy, this.age/this.maxAge]);
+        [this.speedX, this.speedY] = this.net.run([this.x, this.y, this.energy, this.age]);
+        this.x += (this.speedX)*this.speed;
+        this.y += (this.speedY)*this.speed;
+        if (this.x > this.game.width-this.game.zoneData.width-this.width) this.x = this.game.width-this.game.zoneData.width-this.width;
+        if (this.x < 0) this.x = 0;
+        if (this.y > this.game.height-this.height) this.y = this.game.height-this.height;
+        if (this.y < 0) this.y = 0;
+
+        this.energy -= this.energyUsage;
+        this.age++;
+        this.reprTime += 1;
+    }
+
+    draw(context) {
+        // рисование бактерии
+        context.fillStyle = `HSL(${this.color},100%,${this.energy*0.05}%)`;
+        context.fillRect(this.x, this.y, this.width, this.height);
+    }
+}
