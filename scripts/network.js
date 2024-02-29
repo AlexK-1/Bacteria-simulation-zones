@@ -32,7 +32,7 @@ class Network {
 class Layer {
     // класс слоя нейросети
     constructor(inputSize, numberNeurons, activation, bias=true, weights) {
-        // Функции активыции: undefined, "relu", "tanh", "sigmoid"
+        // Функции активации: undefined, "relu", "tanh", "sigmoid"
         this.inputSize = inputSize;
         if (bias) this.inputSize++;
         this.numberNeurons = numberNeurons;

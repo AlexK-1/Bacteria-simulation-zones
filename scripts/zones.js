@@ -21,7 +21,9 @@ class ZoneEnergy extends Zone {
     constructor(game) {
         super(game);
         this.y = 0;
-        this.height = 250;
+        this.height = YELLOW_ZONE_HEIGHT;
+        this.x = YELLOW_ZONE_X;
+        this.width = YELLOW_ZONE_WIDTH;
         this.color = "#D3DD4B";
     }
 }
@@ -30,9 +32,10 @@ class ZoneReproduction extends Zone {
     // зона размножение бактерий
     constructor(game) {
         super(game);
-        this.height = 250;
-        this.y = this.game.height - this.height;
-        //this.x = 750;
+        this.height = GREEN_ZONE_HEIGHT;
+        this.y = this.game.height - GREEN_ZONE_HEIGHT;
+        this.x = GREEN_ZONE_X;
+        this.width = GREEN_ZONE_WIDTH;
         this.color = "#46C16F";
     }
 }

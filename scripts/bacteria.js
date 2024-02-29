@@ -17,16 +17,16 @@ class Bacteria {
         this.y = y;
         this.width = 25;
         this.height = 25;
-        this.speed = 4;
+        this.speed = BACTERIA_SPEED;
         //this.maxAge = 2400 + Math.floor(Math.random()*200);
-        this.maxAge = 2500;
-        this.maxEnergy = 2000;
+        this.maxAge = MAX_AGE;
+        this.maxEnergy = MAX_ENERGY;
         this.age = 0;
-        this.energy = 800;
-        this.energyUsage = 1;
-        this.reprInterval = 100;
-        this.reprTime = -200;
-        this.reprCost = 500;
+        this.energy = ENERGY_BIRTH;
+        this.energyUsage = ENERGY_USAGE;
+        this.reprInterval = REPR_INTERVAL;
+        this.reprTime = -REPR_START;
+        this.reprCost = REPR_COST;
         this.speedX = 0;
         this.speedY = 0;
 
@@ -39,17 +39,17 @@ class Bacteria {
 
         this.net = undefined;
         if (typeof net === "undefined") {
-            this.net = new Network([
-                new Layer(4, 5, "relu"),
+            this.net = new Network([ // структура нейросети бактерий
+                new Layer(4, 5, "relu"), // кол-во входов, кол-во выходов, ф. активации
                 new Layer(5, 5, "sigmoid"),
                 new Layer(5, 2, "tanh"),
             ]);
         } else {
             this.net = new Network(structuredClone(net).layers.map(element => new Layer(element.inputSize-1, element.numberNeurons, element.activation, element.bias, element.weights)));
             
-            if (random(0, 50) === 0) {
-                this.net.mutate(0.07);
-                const color_change = random(-4, 4) * 10;
+            if (randomFloat(0, 0.99) < MUT_RATE) {
+                this.net.mutate(MUT_SIZE);
+                const color_change = random(-40, 40);
                 //console.log(`Bacteria has mutated. Parent color: ${this.color}, new color: ${this.color+color_change}`);
                 this.color += color_change;
             }
@@ -58,7 +58,7 @@ class Bacteria {
 
     update() {
         //[this.speedX, this.speedY] = this.net.run([this.x/this.game.width-this.game.zoneData.width, this.y/this.game.height, this.energy/this.maxEnergy, this.age/this.maxAge]);
-        [this.speedX, this.speedY] = this.net.run([this.x, this.y, this.energy, this.age]);
+        [this.speedX, this.speedY] = this.net.run([this.x, this.y, this.energy, this.age]); // запуск нейросети
         this.x += (this.speedX)*this.speed;
         this.y += (this.speedY)*this.speed;
         if (this.x > this.game.width-this.game.zoneData.width-this.width) this.x = this.game.width-this.game.zoneData.width-this.width;

@@ -23,7 +23,7 @@ class Game {
         this.zoneData = new ZoneData(this);
         this.dataZone = 
         this.bacteria = [];
-        for (let i = 0; i < 5000; i++) {
+        for (let i = 0; i < NUM_BACTERIA; i++) {
             this.bacteria.push(new Bacteria(this, random(0, 1500), random(this.zoneEnergy.height, this.height-this.zoneReproduction.height), undefined, undefined)); // создание нескольких бактрерий
         }
         this.bacteriaColors = {};
@@ -40,7 +40,7 @@ class Game {
         this.bacteria.forEach((element, index) => {
             element.update(device);
             if (this.checkCollision(this.zoneEnergy, element)) { // получение энергии если в жёлтой зоне
-                element.energy += 4;
+                element.energy += GETTING_ENERGY;
             }
             if (element.energy > element.maxEnergy) element.energy = element.maxEnergy;
             if (this.checkCollision(this.zoneReproduction, element) && element.reprTime > element.reprInterval) {
