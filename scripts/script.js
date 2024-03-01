@@ -21,12 +21,12 @@ class Game {
         this.zoneEnergy = new ZoneEnergy(this);
         this.zoneReproduction = new ZoneReproduction(this);
         this.zoneData = new ZoneData(this);
-        this.dataZone = 
         this.bacteria = [];
         for (let i = 0; i < NUM_BACTERIA; i++) {
             this.bacteria.push(new Bacteria(this, random(0, 1500), random(this.zoneEnergy.height, this.height-this.zoneReproduction.height), undefined, undefined)); // создание нескольких бактрерий
         }
         this.bacteriaColors = {};
+        this.showBacteria = [];
     }
 
     update(device) {
@@ -83,7 +83,14 @@ class Game {
         this.zoneReproduction.draw(context);
         this.zoneData.draw(context, this.bacteriaColors, this.bacteria.length, fps);
         this.bacteria.forEach(element => {
-            element.draw(context);
+            let a = this.showBacteria.includes(String(element.color));
+            if (!this.showBacteria.length || a) {
+                //console.log(this.zoneData.BColors2);
+                let b = this.zoneData.BColors2.indexOf(String(element.color));
+                if (a && b < 0) this.showBacteria.splice(b, 1); 
+                element.draw(context);
+            }
+            //element.draw(context);
         });
     }
 

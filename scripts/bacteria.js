@@ -54,6 +54,10 @@ class Bacteria {
                 this.color += color_change;
             }
         }
+        if (this.x > this.game.width-this.game.zoneData.width-this.width) this.x = this.game.width-this.game.zoneData.width-this.width;
+        if (this.x < 0) this.x = 0;
+        if (this.y > this.game.height-this.height) this.y = this.game.height-this.height;
+        if (this.y < 0) this.y = 0;
     }
 
     update() {

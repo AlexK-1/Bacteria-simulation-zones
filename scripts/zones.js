@@ -50,6 +50,8 @@ class ZoneData extends Zone {
         this.x = this.game.width - this.width;
         this.color = "#FFF";
         this.borderWidth = 5;
+        this.BColors = [];
+        this.BColors2 = [];
     }
 
     draw(context, bacteriaColors, bacteriaCount, fps) {
@@ -66,7 +68,10 @@ class ZoneData extends Zone {
         context.fillText("Total: " + bacteriaCount, this.x+this.borderWidth+10, 72);
 
         // отображение бактерий разного вида
-        let colors = Object.entries(bacteriaColors).sort((a, b) => b[1] - a[1]).slice(0, 24); // сортировка списка цаетов в порядке убывания
+        let colors = Object.entries(bacteriaColors).sort((a, b) => b[1] - a[1]).slice(0, 24); // сортировка списка цветов в порядке убывания
+        this.BColors = colors;
+        this.BColors2 = colors.map(element => element[0]);
+
         
         let y = 115;
         context.font = "20px Helvetica";
@@ -76,23 +81,20 @@ class ZoneData extends Zone {
 
             context.fillStyle = `HSL(${bColor[0]},100%,50%)`;
             context.fillRect(this.x+this.borderWidth+15, y-19, 25, 25);
+
+            context.beginPath();
+            context.lineWidth = 2;
+            context.strokeStyle = "red";
+            context.arc(this.game.width-20, y-6, 12, 0, Math.PI*2, false);
+            context.stroke();
+
+            if (this.game.showBacteria.includes(bColor[0])) {
+                context.beginPath();
+                context.fillStyle = "red";
+                context.arc(this.game.width-20, y-6, 8, 0, Math.PI*2, false);
+                context.fill();
+            }
             y += 39.5;
         }
-
-        /*let y = 80;
-        context.font = "20px Helvetica";
-        //bacteriaColors = game.bacteria.map(element => element.color)
-        for (let i of newBacteriaColors) {
-            const count = newBacteriaColors.reduce((acc, current) => acc+=Number(current===i), 0);
-            if (count > 0) {
-                newBacteriaColors = newBacteriaColors.filter(element => element != i);
-                context.fillText(count, this.x+this.borderWidth+60, y);
-
-                context.fillStyle = `HSL(${i},100%,50%)`;
-                context.fillRect(this.x+this.borderWidth+20, y-19, 25, 25);
-                context.fillStyle = "black";
-                y += 40;
-            }
-        }*/
     }
 }
